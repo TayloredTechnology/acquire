@@ -1,0 +1,32 @@
+{
+  "name": "acquire",
+  "version": "0.0.0",
+  "description": "Require all modules from the node_modules directory, using Node module resolution algorithm to discover it",
+  "author": "Eugene Sharygin <eush77@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "homepage": "https://github.com/eush77/acquire",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eush77/acquire"
+  },
+  "bugs": {
+    "url": "https://github.com/eush77/acquire/issues"
+  },
+  "keywords": [
+    "require",
+    "resolve",
+    "node",
+    "module",
+    "node_modules",
+    "resolution",
+    "traversal"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "tape": "^3.5.0",
+    "zipmap": "^1.1.1"
+  }
+}
