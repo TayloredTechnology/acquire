@@ -26,11 +26,14 @@ Returns object of all the modules required:
 }
 ```
 
-| Option | Type    | Required? | Default |
-| :----- | :------ | :-------: | :------ |
-| depth  | number  | No        | `1`     |
+| Option       | Type    | Required? | Default |
+| :----------- | :------ | :-------: | :------ |
+| depth        | number  | No        | `1`     |
+| skipFailures | boolean | No        | `false` |
 
 If `opts.depth` is finite, it specifies the number of `node_modules` directories up the directory tree to traverse into. If `opts.depth` is `Infinity`, traversal ends at the file system root.
+
+`opts.skipFailures` skips modules that fail to `require()` (e.g. plugins for Grunt).
 
 ### `acquire.resolve(basedir, [opts])`
 
