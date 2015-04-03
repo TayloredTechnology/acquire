@@ -1,6 +1,7 @@
 'use strict';
 
 var findNodeModules = require('find-node-modules'),
+    getModuleName = require('filename-to-module-name'),
     zipmap = require('zipmap'),
     xtend = require('xtend');
 
@@ -16,6 +17,14 @@ var nodeModulesPaths = function (basedir) {
 };
 
 
+var safeResolve = function (modulePath) {
+  try {
+    return require.resolve(modulePath);
+  }
+  catch (e) {}
+};
+
+
 var acquire = function acquire(basedir, opts) {
   var modules = acquire.resolve(basedir, opts);
   Object.keys(modules).forEach(function (m) {
@@ -27,16 +36,19 @@ var acquire = function acquire(basedir, opts) {
 
 acquire.resolve = function (basedir, opts) {
   opts = opts || {};
-  opts.depth = opts.depths || 1;
+  opts.depth = opts.depth || 1;
 
   var dirs = nodeModulesPaths(basedir)
         .slice(0, opts.depth)
         .reverse();
 
   return xtend.apply(null, dirs.map(function (dir) {
-    return zipmap(fs.readdirSync(dir).map(function (module) {
-      return [module, path.resolve(dir, module)];
-    }));
+    return zipmap(fs.readdirSync(dir).map(function (basename) {
+      var modulePath = path.resolve(dir, basename);
+      var moduleName = getModuleName(modulePath);
+      modulePath = (opts.skipFailures ? safeResolve : require.resolve)(modulePath);
+      return modulePath ? [moduleName, modulePath] : undefined;
+    }).filter(Boolean));
   }));
 };
 

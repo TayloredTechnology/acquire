@@ -22,26 +22,32 @@ test(function (t) {
 
   check(basedir, ['bottom']);
   check(basedir, { depth: 2 }, ['middle', 'bottom']);
-  check(basedir, { depth: 3 }, ['top', 'middle', 'bottom']);
+  checkError(basedir, { depth: 3 });
+  check(basedir, { depth: 3, skipFailures: true }, ['top', 'middle', 'bottom']);
 
   t.end();
 
   function check() {
     var argv = [].slice.call(arguments);
-    var basedir = argv[0];
     var modules = argv.pop();
-
-    var message = function (method) {
-      return [method, 'from', unfixture(basedir),
-              argv.slice(1).map(JSON.stringify)].join(' ');
-    };
 
     t.deepEqual(acquire.resolve.apply(null, argv), zipmap(modules.map(function (m) {
       return [m, paths[m]];
-    })), message('acquire.resolve'));
+    })), checkMessage('acquire.resolve', argv));
 
     t.deepEqual(acquire.apply(null, argv), zipmap(modules.map(function (m) {
       return [m, m];
-    })), message('acquire'));
+    })), checkMessage('acquire', argv));
+  }
+
+  function checkError() {
+    var argv = [].slice.call(arguments);
+    t.throws(Function.bind.apply(acquire.resolve, [null].concat(argv)),
+             checkMessage('acquire.resolve', argv) + ' (throws)');
+  }
+
+  function checkMessage(method, argv) {
+    return [method, 'from', unfixture(argv[0]),
+            argv.slice(1).map(JSON.stringify)].join(' ');
   }
 });
