@@ -1,6 +1,6 @@
 {
   "name": "acquire",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Require all modules from the node_modules directory, using Node module resolution algorithm to discover it",
   "author": "Eugene Sharygin <eush77@gmail.com>",
   "license": "MIT",
