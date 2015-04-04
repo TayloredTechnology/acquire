@@ -34,6 +34,9 @@ var safeResolve = function (modulePath) {
 
 
 var acquire = function acquire(opts) {
+  opts = opts || {};
+  opts.basedir = opts.basedir || path.dirname(callsites()[1].getFileName());
+
   var modules = acquire.resolve(opts);
   Object.keys(modules).forEach(function (m) {
     modules[m] = require(modules[m]);
