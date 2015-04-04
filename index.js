@@ -4,7 +4,8 @@ var findNodeModules = require('find-node-modules'),
     getModuleName = require('filename-to-module-name'),
     validateNpmPackageName = require('validate-npm-package-name'),
     zipmap = require('zipmap'),
-    xtend = require('xtend');
+    xtend = require('xtend'),
+    callsites = require('callsites');
 
 var fs = require('fs'),
     path = require('path');
@@ -32,8 +33,8 @@ var safeResolve = function (modulePath) {
 };
 
 
-var acquire = function acquire(basedir, opts) {
-  var modules = acquire.resolve(basedir, opts);
+var acquire = function acquire(opts) {
+  var modules = acquire.resolve(opts);
   Object.keys(modules).forEach(function (m) {
     modules[m] = require(modules[m]);
   });
@@ -41,11 +42,12 @@ var acquire = function acquire(basedir, opts) {
 };
 
 
-acquire.resolve = function (basedir, opts) {
+acquire.resolve = function (opts) {
   opts = opts || {};
+  opts.basedir = opts.basedir || path.dirname(callsites()[1].getFileName());
   opts.depth = opts.depth || 1;
 
-  var dirs = nodeModulesPaths(basedir)
+  var dirs = nodeModulesPaths(opts.basedir)
         .slice(0, opts.depth)
         .reverse();
 

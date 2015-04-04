@@ -13,9 +13,9 @@ Using Node module resolution [algorithm](https://nodejs.org/docs/latest/api/modu
 
 ## API
 
-### `acquire(basedir, [opts])`
+### `acquire([opts])`
 
-Require all modules in `node_modules`, starting from the `basedir`.
+Require all modules in `node_modules`, starting from `opts.basedir`.
 
 Returns object of all the modules required:
 
@@ -26,18 +26,19 @@ Returns object of all the modules required:
 }
 ```
 
-| Option       | Type    | Required? | Default |
-| :----------- | :------ | :-------: | :------ |
-| depth        | number  | No        | `1`     |
-| skipFailures | boolean | No        | `false` |
+| Option       | Type    | Required? | Default     |
+| :----------- | :------ | :-------: | :---------- |
+| basedir      | string  | No        | `__dirname` |
+| depth        | number  | No        | `1`         |
+| skipFailures | boolean | No        | `false`     |
 
 If `opts.depth` is finite, it specifies the number of `node_modules` directories up the directory tree to traverse into. If `opts.depth` is `Infinity`, traversal ends at the file system root.
 
 `opts.skipFailures` skips modules that fail to `require()` (e.g. plugins for Grunt).
 
-### `acquire.resolve(basedir, [opts])`
+### `acquire.resolve([opts])`
 
-Require.resolve all modules in `node_modules`, starting from the `basedir`.
+Require.resolve all modules in `node_modules`, starting from `opts.basedir`.
 
 Returns object of all the modules and corresponding paths:
 

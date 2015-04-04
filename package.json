@@ -28,6 +28,7 @@
     "traversal"
   ],
   "dependencies": {
+    "callsites": "^1.0.0",
     "filename-to-module-name": "^0.1.1",
     "find-node-modules": "^1.0.1",
     "validate-npm-package-name": "^2.0.1",
