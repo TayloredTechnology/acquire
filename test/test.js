@@ -3,7 +3,8 @@
 var acquire = require('..');
 
 var test = require('tape'),
-    zipmap = require('zipmap');
+    zipmap = require('zipmap'),
+    xtend = require('xtend');
 
 var path = require('path');
 
@@ -55,4 +56,17 @@ test(function (t) {
     });
     return method + ' ' + JSON.stringify(msgopts);
   }
+});
+
+
+test('implicit basedir', function (t) {
+  var pkg = require('../package.json');
+  var dependencies = Object.keys(xtend(pkg.dependencies, pkg.devDependencies));
+
+  var modules = acquire();
+  dependencies.forEach(function (module) {
+    t.equal(modules[module], require(module), 'has ' + module);
+  });
+
+  t.end();
 });
