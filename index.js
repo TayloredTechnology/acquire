@@ -25,11 +25,13 @@ var validateModuleName = function (name) {
 };
 
 
-var safeResolve = function (modulePath) {
+var safeResolve = function (cb, modulePath) {
   try {
     return require.resolve(modulePath);
   }
-  catch (e) {}
+  catch (e) {
+    cb && cb();
+  }
 };
 
 
@@ -62,7 +64,16 @@ acquire.resolve = function (opts) {
 
       var modulePath = path.resolve(dir, basename);
       var moduleName = getModuleName(modulePath);
-      modulePath = (opts.skipFailures ? safeResolve : require.resolve)(modulePath);
+
+      var resolve = opts.skipFailures
+            ? safeResolve.bind(null,
+                               typeof opts.skipFailures == 'function' &&
+                               function () {
+                                 opts.skipFailures(moduleName, modulePath);
+                               })
+            : require.resolve;
+
+      modulePath = resolve(modulePath);
       return modulePath ? [moduleName, modulePath] : undefined;
     }).filter(Boolean));
   }));

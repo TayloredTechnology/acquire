@@ -15,6 +15,7 @@ test(function (t) {
   var unfixture = path.relative.bind(null, fixtures);
 
   var paths = {
+    foo: fixture('node_modules/foo'),
     top: fixture('node_modules/top.json'),
     middle: fixture('node_modules/foo/node_modules/middle/index.json'),
     bottom: fixture('node_modules/foo/src/node_modules/bottom.json')
@@ -30,6 +31,17 @@ test(function (t) {
   check(opts({ depth: 2 }), ['middle', 'bottom']);
   checkError(opts({ depth: 3 }));
   check(opts({ depth: 3, skipFailures: true }), ['top', 'middle', 'bottom']);
+
+  var failures = [];
+  var collectFailure = function (name, path) {
+    failures.push([name, path]);
+  };
+  check(opts({ depth: 3, skipFailures: collectFailure }),
+        ['top', 'middle', 'bottom']);
+  // One entry for acquire, one for acquire.resolve.
+  t.deepEqual(failures, [['foo', paths.foo],
+                         ['foo', paths.foo]],
+              'failures collected');
 
   t.end();
 
