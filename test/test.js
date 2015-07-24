@@ -61,12 +61,9 @@ test(function (t) {
   }
 
   function checkMessage(method, opts) {
-    var msgopts = Object.create(opts);
-    Object.defineProperty(msgopts, 'basedir', {
-      enumerable: true,
-      value: unfixture(opts.basedir)
+    return method + ' ' + JSON.stringify(opts, function (key, value) {
+      return key == 'basedir' ? unfixture(value) : value;
     });
-    return method + ' ' + JSON.stringify(msgopts);
   }
 });
 
