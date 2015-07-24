@@ -51,6 +51,7 @@ acquire.resolve = function (opts) {
   opts = opts || {};
   opts.basedir = opts.basedir || path.dirname(callsites()[1].getFileName());
   opts.depth = opts.depth || 1;
+  opts.ignore = typeof opts.ignore == 'string' ? [opts.ignore] : opts.ignore || [];
 
   var dirs = nodeModulesPaths(opts.basedir)
         .slice(0, opts.depth)
@@ -58,12 +59,12 @@ acquire.resolve = function (opts) {
 
   return xtend.apply(null, dirs.map(function (dir) {
     return zipmap(fs.readdirSync(dir).map(function (basename) {
-      if (!validateModuleName(basename)) {
-        return;
-      }
-
       var modulePath = path.resolve(dir, basename);
       var moduleName = getModuleName(modulePath);
+
+      if (!validateModuleName(moduleName) || opts.ignore.indexOf(moduleName) >= 0) {
+        return;
+      }
 
       var resolve = opts.skipFailures
             ? safeResolve.bind(null,

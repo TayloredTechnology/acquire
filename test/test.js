@@ -30,13 +30,14 @@ test(function (t) {
   check(opts(), ['bottom']);
   check(opts({ depth: 2 }), ['middle', 'bottom']);
   checkError(opts({ depth: 3 }));
-  check(opts({ depth: 3, skipFailures: true }), ['top', 'middle', 'bottom']);
+  check(opts({ depth: 3, skipFailures: true, ignore: 'bad' }),
+        ['top', 'middle', 'bottom']);
 
   var failures = [];
   var collectFailure = function (name, path) {
     failures.push([name, path]);
   };
-  check(opts({ depth: 3, skipFailures: collectFailure }),
+  check(opts({ depth: 3, skipFailures: collectFailure, ignore: ['bad'] }),
         ['top', 'middle', 'bottom']);
   // One entry for acquire, one for acquire.resolve.
   t.deepEqual(failures, [['foo', paths.foo],
