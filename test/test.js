@@ -46,18 +46,23 @@ test(function (t) {
   t.end();
 
   function check(opts, modules) {
-    t.deepEqual(acquire.resolve(opts), zipmap(modules.map(function (m) {
-      return [m, paths[m]];
-    })), checkMessage('acquire.resolve', opts));
+    (function (msg) {
+      t.deepEqual(acquire.resolve(opts), zipmap(modules.map(function (m) {
+        return [m, paths[m]];
+      })), msg);
+    }(checkMessage('acquire.resolve', opts)));
 
-    t.deepEqual(acquire(opts), zipmap(modules.map(function (m) {
-      return [m, m];
-    })), checkMessage('acquire', opts));
+    (function (msg) {
+      t.deepEqual(acquire(opts), zipmap(modules.map(function (m) {
+        return [m, m];
+      })), msg);
+    }(checkMessage('acquire', opts)));
   }
 
   function checkError(opts) {
-    t.throws(acquire.resolve.bind(null, opts),
-             checkMessage('acquire.resolve', opts) + ' (throws)');
+    (function (msg) {
+      t.throws(acquire.resolve.bind(null, opts), msg);
+    }(checkMessage('acquire.resolve', opts) + ' (throws)'));
   }
 
   function checkMessage(method, opts) {
